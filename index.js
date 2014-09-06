@@ -42,6 +42,8 @@ server.route({
     method: 'PUT',
     path: '/experiments/{id}',
     handler: function (request, reply) {
+        request.payload._id = request.params.id;
+
         client.index({
           index: 'experiments',
           type: 'experiment',
