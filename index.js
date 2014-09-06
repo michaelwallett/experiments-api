@@ -50,6 +50,22 @@ server.route({
     }
 });
 
+server.route({
+    method: 'GET',
+    path: '/experiments/{name}',
+    handler: function (request, reply) {
+        client.get({
+          index: 'experiments',
+          type: 'experiment',
+          id: request.params.name
+        }).then(function (body) {
+          reply(body._source);
+        }, function (error) {
+          console.trace(error.message);
+        });
+    }
+});
+
 server.start(function () {
     console.log('Server running at:', server.info.uri);
 });
