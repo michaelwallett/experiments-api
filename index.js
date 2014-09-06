@@ -1,17 +1,29 @@
-var Hapi = require('hapi');
-var server = new Hapi.Server(3000);
+var elasticsearch = require('elasticsearch'),
+    Hapi = require('hapi'),
+    server = new Hapi.Server(3000);
+
+var client = new elasticsearch.Client({
+  host: 'localhost:9200',
+  log: 'trace'
+});
 
 server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        var runningExperiments = [
-          {
-            name: "conversionIsBetterWithComicSansFont"
+        client.percolate({
+          index: 'targeting',
+          type: 'request',
+          body: {
+            doc: {
+              metroId: "72"
+            }
           }
-        ];
-
-        reply(runningExperiments);
+        }).then(function (body) {
+          reply(body);
+        }, function (error) {
+          console.trace(error.message);
+        });
     }
 });
 
