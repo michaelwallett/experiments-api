@@ -15,9 +15,7 @@ server.route({
           index: 'targeting',
           type: 'request',
           body: {
-            doc: {
-              metroId: "72"
-            }
+            doc: request.query
           }
         }).then(function (body) {
           reply(body);
