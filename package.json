@@ -18,6 +18,7 @@
   "homepage": "https://github.com/michaelwallett/experiments-api",
   "dependencies": {
     "elasticsearch": "^2.4.1",
-    "hapi": "^6.7.1"
+    "hapi": "^6.7.1",
+    "underscore": "^1.7.0"
   }
 }
