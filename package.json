@@ -1,0 +1,22 @@
+{
+  "name": "experiments-api",
+  "version": "0.0.0",
+  "description": "experiments-api\r ===============",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/michaelwallett/experiments-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michaelwallett/experiments-api/issues"
+  },
+  "homepage": "https://github.com/michaelwallett/experiments-api",
+  "dependencies": {
+    "hapi": "^6.7.1"
+  }
+}
