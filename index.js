@@ -9,7 +9,7 @@ var client = new elasticsearch.Client({
 
 server.route({
     method: 'GET',
-    path: '/',
+    path: '/environments/{environment}/sessions/{session}/running-experiments',
     handler: function (request, reply) {
         client.percolate({
           index: 'targeting',
