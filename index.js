@@ -36,6 +36,13 @@ server.route({
           id: request.params.name,
           body: request.payload
         }).then(function (body) {
+          client.index({
+            index: 'targeting',
+            type: '.percolator',
+            id: request.params.name,
+            body: request.payload.targeting
+          })
+
           reply();
         }, function (error) {
           console.trace(error.message);
