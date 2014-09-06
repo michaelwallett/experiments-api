@@ -1,4 +1,5 @@
 var elasticsearch = require('elasticsearch'),
+    _ = require('underscore'),
     Hapi = require('hapi'),
     server = new Hapi.Server(3000);
 
@@ -15,7 +16,7 @@ server.route({
           index: 'targeting',
           type: 'request',
           body: {
-            doc: request.query
+            doc: _.extend(request.query, request.params)
           }
         }).then(function (body) {
           reply(body);
