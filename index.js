@@ -8,6 +8,18 @@ var client = new elasticsearch.Client({
   log: 'trace'
 });
 
+var getExperiment = function(id, callback) {
+  client.getSource({
+    index: 'experiments',
+    type: 'experiment',
+    id: id
+  }).then(function (body) {
+    callback(body);
+  }, function (error) {
+    console.trace(error.message);
+  });
+}
+
 server.route({
     method: 'GET',
     path: '/environments/{environment}/sessions/{session}/running-experiments',
@@ -28,18 +40,18 @@ server.route({
 
 server.route({
     method: 'PUT',
-    path: '/experiments/{name}',
+    path: '/experiments/{id}',
     handler: function (request, reply) {
         client.index({
           index: 'experiments',
           type: 'experiment',
-          id: request.params.name,
+          id: request.params.id,
           body: request.payload
         }).then(function (body) {
           client.index({
             index: 'targeting',
             type: '.percolator',
-            id: request.params.name,
+            id: request.params.id,
             body: request.payload.targeting
           })
 
@@ -52,17 +64,11 @@ server.route({
 
 server.route({
     method: 'GET',
-    path: '/experiments/{name}',
+    path: '/experiments/{id}',
     handler: function (request, reply) {
-        client.get({
-          index: 'experiments',
-          type: 'experiment',
-          id: request.params.name
-        }).then(function (body) {
-          reply(body._source);
-        }, function (error) {
-          console.trace(error.message);
-        });
+      getExperiment(request.params.id, function(experiment) {
+        reply(experiment);
+      });
     }
 });
 
