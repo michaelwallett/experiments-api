@@ -6,7 +6,7 @@ var elasticsearch = require('elasticsearch'),
 
 var client = new elasticsearch.Client({
   host: 'localhost:9200',
-  log: 'trace'
+  log: 'error'
 });
 
 var getExperiment = function (id, callback) {
@@ -20,6 +20,17 @@ var getExperiment = function (id, callback) {
     console.trace(error.message);
   });
 };
+
+var experimentIsRunning = function (experiment, session) {
+  if (experiment.percentage === 0) {
+    return false;
+  }
+
+  var sessionHash = Math.abs(session.hashCode());
+  var allocatedBucket = sessionHash % 100;
+
+  return allocatedBucket <= experiment.percentage;
+}
 
 server.route({
     method: 'GET',
@@ -42,11 +53,11 @@ server.route({
           });
          },
          function (err, matchedExperiments) {
-          var experimentsWithTrafficAllocation = _.filter(matchedExperiments, function (experiment) {
-            return experiment.percentage > 0;
+          var runningExperiments = _.filter(matchedExperiments, function (experiment) {
+            return experimentIsRunning(experiment, request.params.session);
           });
 
-          reply(experimentsWithTrafficAllocation);
+          reply(runningExperiments);
          });
         }, function (error) {
           console.trace(error.message);
@@ -93,3 +104,10 @@ server.route({
 server.start(function () {
     console.log('Server running at:', server.info.uri);
 });
+
+String.prototype.hashCode = function() {
+  for (var ret = 0, i = 0, len = this.length; i < len; i++) {
+    ret = (31 * ret + this.charCodeAt(i)) << 0;
+  }
+  return ret;
+};
