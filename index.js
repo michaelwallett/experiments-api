@@ -27,9 +27,9 @@ var experimentIsRunning = function (experiment, session) {
   }
 
   var sessionHash = Math.abs(session.hashCode());
-  var allocatedBucket = sessionHash % 100;
+  var allocatedPercentile = sessionHash % 100;
 
-  return allocatedBucket <= experiment.percentage;
+  return allocatedPercentile < experiment.percentage;
 }
 
 server.route({
