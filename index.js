@@ -41,8 +41,12 @@ server.route({
             callback(null, experiment);
           });
          },
-         function (err, experiments) {
-          reply(experiments);
+         function (err, matchedExperiments) {
+          var experimentsWithTrafficAllocation = _.filter(matchedExperiments, function (experiment) {
+            return experiment.percentage > 0;
+          });
+
+          reply(experimentsWithTrafficAllocation);
          });
         }, function (error) {
           console.trace(error.message);
