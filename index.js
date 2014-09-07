@@ -1,5 +1,6 @@
 var elasticsearch = require('elasticsearch'),
     _ = require('underscore'),
+    async = require('async'),
     Hapi = require('hapi'),
     server = new Hapi.Server(3000);
 
@@ -8,7 +9,7 @@ var client = new elasticsearch.Client({
   log: 'trace'
 });
 
-var getExperiment = function(id, callback) {
+var getExperiment = function (id, callback) {
   client.getSource({
     index: 'experiments',
     type: 'experiment',
@@ -18,7 +19,7 @@ var getExperiment = function(id, callback) {
   }, function (error) {
     console.trace(error.message);
   });
-}
+};
 
 server.route({
     method: 'GET',
@@ -31,7 +32,18 @@ server.route({
             doc: _.extend(request.params, request.query)
           }
         }).then(function (body) {
-          reply(body);
+          var experimentIds = _.map(body.matches, function (match) {
+            return match._id;
+          });
+
+         async.concat(experimentIds, function (experimentId, callback) {
+          getExperiment(experimentId, function (experiment) {
+            callback(null, experiment);
+          });
+         },
+         function (err, experiments) {
+          reply(experiments);
+         });
         }, function (error) {
           console.trace(error.message);
         });
