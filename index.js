@@ -57,7 +57,11 @@ server.route({
             return experimentIsRunning(experiment, request.params.session);
           });
 
-          reply(runningExperiments);
+          var runningExperimentIds = _.map(runningExperiments, function (experiment) {
+            return experiment._id;
+          });
+
+          reply(runningExperimentIds);
          });
         }, function (error) {
           console.trace(error.message);
