@@ -2,7 +2,7 @@ var elasticsearch = require('elasticsearch'),
     _ = require('underscore'),
     async = require('async'),
     Hapi = require('hapi'),
-    server = new Hapi.Server(3000);
+    server = new Hapi.Server(process.env.PORT || 3000);
 
 var client = new elasticsearch.Client({
   host: 'localhost:9200',
