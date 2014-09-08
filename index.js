@@ -5,7 +5,7 @@ var elasticsearch = require('elasticsearch'),
     server = new Hapi.Server(process.env.PORT || 3000);
 
 var client = new elasticsearch.Client({
-  host: 'localhost:9200',
+  host: (process.env.SEARCHBOX_URL || 'localhost:9200'),
   log: 'error'
 });
 
